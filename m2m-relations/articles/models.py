@@ -30,15 +30,4 @@ class ArticleScope(models.Model):
     is_main = models.BooleanField(default=False)
     extra = 1
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                name= 'unique_true_is_main',
-                fields = ['is_main', 'article'],
-                condition=models.Q(is_main=True)
-            ),
-            models.UniqueConstraint(
-                name= 'unique_scope',
-                fields = ['article', 'tag'],
-                )
-            ]
+    
