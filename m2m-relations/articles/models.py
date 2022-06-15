@@ -14,5 +14,31 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
-class Scope(models.Model):
-    pass
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+    article = models.ManyToManyField(Article, through='ArticleScope')
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return self.name
+
+class ArticleScope(models.Model):
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='scopes')
+    is_main = models.BooleanField(default=False)
+    extra = 1
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                name= 'unique_true_is_main',
+                fields = ['is_main', 'article'],
+                condition=models.Q(is_main=True)
+            ),
+            models.UniqueConstraint(
+                name= 'unique_scope',
+                fields = ['article', 'tag'],
+                )
+            ]
